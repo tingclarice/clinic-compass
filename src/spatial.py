@@ -3,6 +3,7 @@
 Semua perhitungan jarak dilakukan dalam meter (EPSG:32749, UTM zona 49S).
 """
 import geopandas as gpd
+import pandas as pd
 from shapely.geometry import Point
 
 CRS_METER = "EPSG:32749"   # UTM zona 49 Selatan, untuk Surabaya
@@ -48,3 +49,31 @@ def cari_dengan_perluasan(klinik, posisi_xy, radius_awal=3000, radius_maks=5000)
     if len(hasil) == 0 and radius_maks > radius_awal:
         hasil = klinik_dalam_radius(klinik, posisi_xy, radius_maks)
     return hasil
+
+def muat_klinik(path, kolom_x="Longitude", kolom_y="Latitude"):
+    """Baca klinik dari GeoJSON atau CSV, lalu ubah ke meter."""
+    if path.endswith(".geojson"):
+        gdf = gpd.read_file(path)
+    else:
+        df = pd.read_csv(path)
+        gdf = gpd.GeoDataFrame(
+            df,
+            geometry=gpd.points_from_xy(df[kolom_x], df[kolom_y]),
+            crs=CRS_DERAJAT,
+        )
+    return ke_meter(gdf)
+
+def muat_wilayah(path):
+    """Baca batas wilayah (poligon) lalu ubah ke meter."""
+    return ke_meter(gpd.read_file(path))
+
+def tandai_wilayah(klinik, wilayah):
+    """Tandai wilayah tiap klinik. Satu klinik hanya satu baris.
+
+    Jika klinik masuk dua poligon, pilih poligon yang namanya sama dengan
+    kolom 'Kecamatan' klinik. Kalau tidak ada yang cocok, ambil yang pertama.
+    """
+    s = gpd.sjoin(klinik, wilayah[["kec", "geometry"]], how="left", predicate="within").reset_index()
+    s["_cocok"] = s["Kecamatan"] == s["kec"]
+    s = s.sort_values(["index", "_cocok"], ascending=[True, False]).drop_duplicates("index", keep="first")
+    return s.drop(columns=["index_right", "_cocok"]).set_index("index")
