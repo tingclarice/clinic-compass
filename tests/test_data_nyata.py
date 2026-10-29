@@ -1,7 +1,11 @@
+import os
+import pytest
 import itertools
 import pytest
 import geopandas as gpd
 from src.spatial import muat_klinik, muat_wilayah, tandai_wilayah
+
+ADA_DATA = os.path.exists("data/processed/klinik_surabaya_barat.geojson") 
 
 KLINIK = "data/processed/klinik_surabaya_barat.geojson"
 WILAYAH = "data/processed/batas_surabaya_barat.geojson"
