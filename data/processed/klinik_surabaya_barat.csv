@@ -1,0 +1,94 @@
+﻿Clinic_ID,ID_Sumber,Nama_Klinik,Alamat,Kecamatan,Jenis_Layanan,Jadwal_Operasional,Status_24_Jam,Sumber_Data,Sumber_Jam,Di_Wilayah,Latitude,Longitude
+K001,osm:w457810393,BPM Afah Fahmi,Jalan Aswm III no. 8,Asemrowo,Dokter umum,,False,OSM,,True,-7.250565,112.713152
+K002,osm:w453637968,Bidan Delima,Puri Lidah Kulon Indah Blok A no.8,Lakarsantri,Dokter umum,,False,OSM,,True,-7.301725,112.652677
+K003,osm:n4491967593,Posyandu,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.30337,112.635674
+K004,osm:n4491967594,Posyandu,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.301037,112.632463
+K005,osm:n4519863509,Posyandu,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.317553,112.650426
+K006,osm:n4519997488,Posyandu Balita Melati 4 dan Lansia,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.32697,112.667904
+K007,osm:n4493536650,Posyandu Balita RW 2 Kel. Jeruk,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.303687,112.643208
+K008,osm:w452577220,Posyandu Balita Rw.3 Kel. Jeruk,Jalan Raya Jeruk,Lakarsantri,Dokter umum,,False,OSM,,True,-7.305301,112.640359
+K009,osm:n4519997589,Posyandu Melati 1,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.327794,112.677535
+K010,osm:w455611437,Posyandu Melati 2 RW 2 Sumur Welut,Jalan Raya Sumur Welut,Lakarsantri,Dokter umum,,False,OSM,,True,-7.326394,112.674074
+K011,osm:w456282384,Posyandu Merpati,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.319389,112.652082
+K012,osm:n4491967595,Posyandu RW 03 Kel. Lakarsantri,,Lakarsantri,Dokter umum,,False,OSM,,True,-7.296393,112.635171
+K013,osm:n4503436232,Posyandu RW 03 Kel. Lidah Kulon,Jalan Puri Lidah Kulon Indah,Lakarsantri,Dokter umum,,False,OSM,,True,-7.304375,112.652711
+K014,osm:n4599296302,Praktek dokter umum,,Lakarsantri,Dokter umum,"Mo-Su 05:00-09:00, 17:00-21:00",False,OSM,OSM,True,-7.295187,112.654332
+K015,osm:n4478353955,Stephen,,Lakarsantri,Dokter gigi,,False,OSM,,True,-7.297778,112.650026
+K016,osm:w462285627,3D Clinic Pakal,Jalan Babat jerawat dalam,Pakal,Dokter umum,,False,OSM,,True,-7.249463,112.626021
+K017,osm:w460673093,Klinik PHC Benowo,pbi pp no.22,Pakal,Dokter umum,,False,OSM,,True,-7.236701,112.627287
+K018,osm:n4590474592,Poskesdes Benowo Ceria,,Pakal,Dokter umum,,False,OSM,,True,-7.234446,112.6152
+K019,osm:w451500928,Posyandu Anggrek,Sumberjaya,Pakal,Dokter umum,,False,OSM,,True,-7.222431,112.594247
+K020,osm:w462285622,Posyandu Durian,Jalan Pondok Benowo Indah,Pakal,Dokter umum,,False,OSM,,True,-7.235761,112.629053
+K021,osm:n4580700781,Posyandu Gotong Royong I,,Pakal,Dokter umum,,False,OSM,,True,-7.237383,112.620442
+K022,osm:w460476420,Posyandu Gotong Royong II,Jalan Pakal Timur III,Pakal,Dokter umum,,False,OSM,,True,-7.243544,112.617406
+K023,osm:w465103030,Posyandu Graha Kencana,Perumahan Graha Kencana Pakal,Pakal,Dokter umum,,False,OSM,,True,-7.231476,112.606176
+K024,osm:n4625438061,Posyandu Harapan Bangsa,,Pakal,Dokter umum,,False,OSM,,True,-7.236205,112.624183
+K025,osm:n4580700784,Posyandu Lansia Anugerah,,Pakal,Dokter umum,,False,OSM,,True,-7.237383,112.62038
+K026,osm:n4576947775,Posyandu Lansia Harapan Pertiwi,Jalan Dukuh Jerawat,Pakal,Dokter umum,,False,OSM,,True,-7.248242,112.628982
+K027,osm:w451527942,Posyandu Lansia Makarya,Dukuh Tambakdono,Pakal,Dokter umum,,False,OSM,,True,-7.214516,112.605829
+K028,osm:n4590474593,Posyandu Lansia Melati,,Pakal,Dokter umum,,False,OSM,,True,-7.234398,112.615217
+K029,osm:n4590428566,Posyandu Lansia Senja Bahagia,,Pakal,Dokter umum,,False,OSM,,True,-7.2318,112.61376
+K030,osm:w460435672,Posyandu Lansia Seroja,Dukuh Jawar Tambakdono,Pakal,Dokter umum,,False,OSM,,True,-7.224794,112.615623
+K031,osm:n4586349373,Posyandu Melati,Jalan Pondok Benowo Indah,Pakal,Dokter umum,,False,OSM,,True,-7.236088,112.630825
+K032,osm:n4590428564,Posyandu Melati,,Pakal,Dokter umum,,False,OSM,,True,-7.231776,112.61369
+K033,osm:n4628345071,Posyandu RW IV Pakal,,Pakal,Dokter umum,,False,OSM,,True,-7.242813,112.610822
+K034,osm:n4599296027,Doktor umum,,Sambikerep,Dokter umum,,False,OSM,,True,-7.285206,112.653098
+K035,osm:n5591713704,Ezmo,,Sambikerep,Dokter gigi,,False,OSM,,True,-7.289571,112.648173
+K036,osm:n4599296028,Fatmawati,,Sambikerep,Dokter gigi,,False,OSM,,True,-7.285091,112.650832
+K037,osm:w451645249,Klinik Abdi Mulia,Jalan HR. Muhammad 401-403,Sukomanunggal,Dokter umum,,False,OSM,,True,-7.286033,112.701035
+K038,osm:w454994578,Klinik Kasih Karunia,Jalan Raya Darmo Permai,Sukomanunggal,Dokter umum,,False,OSM,,True,-7.268943,112.690963
+K039,osm:w459492026,Klinik Pratama Am Nur,Jalan Kalikundang,Sukomanunggal,Dokter umum,,False,OSM,,True,-7.260712,112.711456
+K040,osm:w455434214,Klinik Pratama Dinayla Utama,simorejo sari b 54,Sukomanunggal,Dokter umum,,False,OSM,,True,-7.257587,112.706591
+K041,osm:w453650878,Posyandu Cempaka II,jalan sono indah iv,Sukomanunggal,Dokter umum,,False,OSM,,True,-7.277981,112.699237
+K042,osm:w453646193,Royal Clinic,Jalan Darmo Boulevard,Sukomanunggal,Dokter umum,,False,OSM,,True,-7.278585,112.687243
+K043,osm:w463796368,Klinik Nayaka Husada,raya darmo indah,Tandes,Dokter umum,,False,OSM,,True,-7.263508,112.684061
+K044,osm:w453642807,Posyandu Mawar,Tandes Lor I,Tandes,Dokter umum,,False,OSM,,True,-7.260373,112.687805
+K045,osm:w463796369,Posyandu Sekar Sari,Tandes kidul gang makam,Tandes,Dokter umum,,False,OSM,,True,-7.261464,112.685693
+K046,osm:n4426073009,Ahli gigi,,Luar wilayah,Dokter gigi,,False,OSM,,False,-7.284384,112.671223
+K047,osm:w455595527,Balai Pengobaran Sawung,Jalan Kalianak Timur Lebar,Luar wilayah,Dokter umum,,False,OSM,,False,-7.230782,112.711571
+K048,osm:w455427429,Balai Pengobatan dan Rumah Bersalin Al Azhar,Jalan Dupak Bandarejo No. 23,Luar wilayah,Dokter umum,,False,OSM,,False,-7.242188,112.718773
+K049,osm:n9833266137,Bidan Sudjiati Frans,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.272015,112.723725
+K050,osm:w448272385,Dr Felix,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.269441,112.729926
+K051,osm:w453640265,Drg Elfreda Sidharta,,Luar wilayah,Dokter gigi,,False,OSM,,False,-7.280953,112.703136
+K052,osm:n4193081889,Family Dental Care,"JL. Kupang Indah 16, No. 22",Luar wilayah,Dokter gigi,,False,OSM,,False,-7.283373,112.702404
+K053,osm:n5354542046,Gigi Sehat,,Luar wilayah,Dokter gigi,"Mo-Fr 08:00-13:30, 15:00-21:00; Sa 15:00-18:00",False,OSM,OSM,False,-7.287495,112.679116
+K054,osm:w454776218,Klinik Alma Karya,Jalan Pakis Sidorejo I no. 2-4,Luar wilayah,Dokter umum,,False,OSM,,False,-7.287688,112.723189
+K055,osm:w460452633,Klinik Dokter Eko,manukan lor,Luar wilayah,Dokter umum,,False,OSM,,False,-7.259863,112.665188
+K056,osm:w453913629,Klinik Gigi,Jalan Tidar,Luar wilayah,Dokter gigi,,False,OSM,,False,-7.257277,112.727672
+K057,osm:w460452660,Klinik Manukan,manukan lor,Luar wilayah,Dokter umum,,False,OSM,,False,-7.260159,112.665003
+K058,osm:w454131822,Klinik Medpoint,Jalan Raya Lontar 229,Luar wilayah,Dokter umum,,False,OSM,,False,-7.284105,112.67081
+K059,osm:w454131823,Klinik Miftachul Munir Medika,Jalan Raya Lontar 190,Luar wilayah,Dokter umum,,False,OSM,,False,-7.283257,112.666016
+K060,osm:w451535366,Klinik Perdana Husada,manukan krajan,Luar wilayah,Dokter umum,,False,OSM,,False,-7.259905,112.670787
+K061,osm:w458029990,Klinik Petemon Husada,Jalan Petemon Kali,Luar wilayah,Dokter umum,,False,OSM,,False,-7.265579,112.724019
+K062,osm:w459976950,Klinik Pratama,Jalan Dukuh Kupang VI,Luar wilayah,Dokter umum,,False,OSM,,False,-7.285067,112.710724
+K063,osm:w455463072,"Klinik Pratama ""BDS PACUAN KUDA""",Jalan Pacuan Kuda No. 15 a,Luar wilayah,Dokter umum,,False,OSM,,False,-7.258146,112.717442
+K064,osm:w459482003,Klinik Pratama Gunungsari,Jalan Golf 1A,Luar wilayah,Dokter umum,,False,OSM,,False,-7.306015,112.709956
+K065,osm:w454187199,Klinik Pratama Rawat Inap Putri Rahayu,Jalan Mastrip IX/9,Luar wilayah,Dokter umum,,False,OSM,,False,-7.347893,112.666064
+K066,osm:w451501279,Klinik Pratama Sartika 59,Jalan Manukan Tengah,Luar wilayah,Dokter umum,,False,OSM,,False,-7.264437,112.662165
+K067,osm:w459958973,Klinik Pusura,balongsari tama,Luar wilayah,Dokter umum,,False,OSM,,False,-7.260834,112.677961
+K068,osm:n4548834132,Klinik tanpa nama,,Luar wilayah,Dokter gigi,,False,OSM,,False,-7.28744,112.654538
+K069,osm:n5369425864,Klinik tanpa nama,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.287421,112.679188
+K070,osm:w451659196,Poliklinik SATBRIMOB Polda Jatim,Jalan Gresik No. 39,Luar wilayah,Dokter umum,,False,OSM,,False,-7.234314,112.722935
+K071,osm:w451664232,Poliklinik UWK,Jalan Dukuh Kupang XXV No. 54,Luar wilayah,Dokter umum,,False,OSM,,False,-7.282983,112.710651
+K072,osm:w459700974,Pos Kesehatan Keluarga,Jalan Tengger Raya,Luar wilayah,Dokter umum,,False,OSM,,False,-7.257272,112.656133
+K073,osm:w456287350,Pos Kesehatan Kelurahan,Jalan Mastrip VIII Gang Kramat,Luar wilayah,Dokter umum,,False,OSM,,False,-7.3501,112.667854
+K074,osm:w451490528,Pos Kesehatan Krembangan,Jalan Sanggar,Luar wilayah,Dokter umum,,False,OSM,,False,-7.240749,112.734156
+K075,osm:w465114884,Poskeskel Kelurahan Romokalisari,Jalan,Luar wilayah,Dokter umum,,False,OSM,,False,-7.198663,112.625748
+K076,osm:w453891369,Posyandu Angrek III,Jalan Demak Timur V,Luar wilayah,Dokter umum,,False,OSM,,False,-7.24813,112.723311
+K077,osm:n4600912486,Posyandu Balita Mawar Merah,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.25927,112.662837
+K078,osm:n4520228470,Posyandu Beringin 5,Jalan Kupang Gunung Barat IV,Luar wilayah,Dokter umum,,False,OSM,,False,-7.27799,112.722409
+K079,osm:w459740266,Posyandu Gunung Bromo,Jalan Klakah Rejo Gang IV,Luar wilayah,Dokter umum,,False,OSM,,False,-7.249046,112.647033
+K080,osm:w458638290,Posyandu Ikebana,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.275639,112.721417
+K081,osm:w458638279,Posyandu Ikebana 3,Jalan Banyu Urip Kidul III,Luar wilayah,Dokter umum,,False,OSM,,False,-7.273632,112.72327
+K082,osm:w456699993,Posyandu Ikebana 5,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.274211,112.721032
+K083,osm:w456700072,Posyandu Ikebana 9,Jalan Banyu Urip Kidul III No.42,Luar wilayah,Dokter umum,,False,OSM,,False,-7.273185,112.721787
+K084,osm:n4525562655,Posyandu Kelurahan Morokrembangan,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.235821,112.72236
+K085,osm:n4564476620,Posyandu Kenanga,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.263759,112.655468
+K086,osm:n4546069711,Posyandu Lansia,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.266578,112.72195
+K087,osm:w461311530,Posyandu Lansia Puspita RW I,Jalan Raya Kandangan Gunung,Luar wilayah,Dokter umum,,False,OSM,,False,-7.255078,112.651448
+K088,osm:w462281653,Posyandu Mawar,Jalan Gadel Tengah,Luar wilayah,Dokter umum,,False,OSM,,False,-7.270668,112.677483
+K089,osm:n4518422428,Posyandu Melati,,Luar wilayah,Dokter umum,,False,OSM,,False,-7.250353,112.73476
+K090,osm:n4556787619,Posyandu Melati,Jalan Petemon Barat No.187,Luar wilayah,Dokter umum,,False,OSM,,False,-7.267255,112.716686
+K091,osm:n4520374042,Posyandu Sartika,Jalan Pakis Tirtosari III,Luar wilayah,Dokter umum,,False,OSM,,False,-7.2898,112.722565
+K092,osm:w462687018,Puskemas Manukan Kulon,manukan dalam,Luar wilayah,Dokter umum,,False,OSM,,False,-7.263016,112.668886
+K093,osm:w452393932,Pusmesmas Wiyung,Jalan Menganti Wiyung Gang Pasar Nomer 20,Luar wilayah,Dokter umum,,False,OSM,,False,-7.31651,112.693701
