@@ -1,0 +1,7 @@
+osmnx>=2.0
+geopandas>=1.0
+pandas
+numpy
+matplotlib
+networkx
+ipykernel
