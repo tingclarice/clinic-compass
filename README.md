@@ -8,3 +8,8 @@ Built with Python and geospatial analysis libraries, MediRoute uses Buffer and S
 Developed as a Geographic Information Systems (GIS) project using OpenStreetMap data, GeoPandas, Shapely, Pandas, OSMnx, NetworkX, and Matplotlib.
 
 Project scope: Asemrowo, Benowo, Lakarsantri, Pakal, Sambikerep, Sukomanunggal, and Tandes, Surabaya, Indonesia.
+
+The road-routing module downloads the OSM drivable road graph for the study area on
+first use and caches it locally under `.cache/`. Routing uses projected distances
+and Dijkstra's shortest-path algorithm; the cache can be removed to fetch an
+updated road network.

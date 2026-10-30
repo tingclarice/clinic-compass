@@ -9,6 +9,7 @@ __pycache__/
 
 # Cache OSMnx
 cache/
+.cache/
 
 # Sistem operasi
 .DS_Store
