@@ -13,3 +13,8 @@ The road-routing module downloads the OSM drivable road graph for the study area
 first use and caches it locally under `.cache/`. Routing uses projected distances
 and Dijkstra's shortest-path algorithm; the cache can be removed to fetch an
 updated road network.
+
+Run `notebooks/02_clinic_search.ipynb` for the interactive map. Click to set a
+starting point, select a service and search time, then search within a 1, 3, or
+5 km radius. If no verified-open, reachable clinic matches, the search expands
+to 5 km. Clinics with unknown operating hours are excluded and reported separately.
