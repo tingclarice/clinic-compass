@@ -2,6 +2,7 @@ import geopandas as gpd
 import networkx as nx
 import pytest
 from shapely.geometry import Point
+from shapely.geometry import LineString
 
 from src.routing import route_clinics
 
@@ -35,6 +36,21 @@ def test_routes_and_sorts_by_shortest_road_distance(road_graph):
     assert result["name"].tolist() == ["via-short-road", "via-long-road"]
     assert result["jarak_rute_m"].tolist() == [2000.0, 2400.0]
     assert result["rute"].iloc[0].geom_type == "LineString"
+
+
+def test_route_geometry_follows_street_edge_geometry(road_graph):
+    road_graph[1][2][0]["geometry"] = LineString(
+        [(0, 0), (500, 300), (1000, 0)]
+    )
+    clinics = gpd.GeoDataFrame(
+        {"name": ["clinic"]},
+        geometry=[Point(2000, 0)],
+        crs=CRS,
+    )
+
+    route = route_clinics(road_graph, Point(0, 0), clinics)["rute"].iloc[0]
+
+    assert (500, 300) in list(route.coords)
 
 
 def test_omits_clinic_disconnected_from_road_graph(road_graph):

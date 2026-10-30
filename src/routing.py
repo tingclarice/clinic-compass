@@ -20,7 +20,12 @@ def load_road_graph(boundaries, cache_path=ROAD_GRAPH_CACHE):
     if boundaries.crs is None:
         raise ValueError("Boundary CRS is required to download the road network.")
 
-    polygon = boundaries.to_crs("EPSG:4326").geometry.union_all()
+    polygon = (
+        boundaries.to_crs("EPSG:32749")
+        .geometry.union_all()
+        .buffer(5000)
+    )
+    polygon = gpd.GeoSeries([polygon], crs="EPSG:32749").to_crs("EPSG:4326").iloc[0]
     graph = ox.graph_from_polygon(
         polygon,
         network_type="drive",
@@ -80,13 +85,35 @@ def route_clinics(graph, user_location, clinics):
             Point(graph.nodes[destination_node]["x"], graph.nodes[destination_node]["y"])
         )
         total_distance = distances[destination_node] + snap_distance
-        route_points = [user_point]
-        route_points.extend(
-            Point(graph.nodes[node]["x"], graph.nodes[node]["y"])
-            for node in road_path
+        origin_point = Point(
+            graph.nodes[origin_node]["x"], graph.nodes[origin_node]["y"]
         )
-        route_points.append(clinic_point)
-        route = LineString([(point.x, point.y) for point in route_points])
+        destination_point = Point(
+            graph.nodes[destination_node]["x"], graph.nodes[destination_node]["y"]
+        )
+        route_coordinates = [(user_point.x, user_point.y), (origin_point.x, origin_point.y)]
+        for start, end in zip(road_path, road_path[1:]):
+            edge_data = graph.get_edge_data(start, end)
+            if graph.is_multigraph():
+                edge_data = min(
+                    edge_data.values(), key=lambda data: data.get("length", float("inf"))
+                )
+            geometry = edge_data.get("geometry")
+            if geometry is None:
+                segment = [
+                    (graph.nodes[start]["x"], graph.nodes[start]["y"]),
+                    (graph.nodes[end]["x"], graph.nodes[end]["y"]),
+                ]
+            else:
+                segment = list(geometry.coords)
+                start_xy = (graph.nodes[start]["x"], graph.nodes[start]["y"])
+                if Point(segment[-1]).distance(Point(start_xy)) < Point(segment[0]).distance(Point(start_xy)):
+                    segment.reverse()
+            route_coordinates.extend(segment[1:])
+        route_coordinates.extend(
+            [(destination_point.x, destination_point.y), (clinic_point.x, clinic_point.y)]
+        )
+        route = LineString(route_coordinates)
         result.at[index, "jarak_rute_m"] = round(total_distance, 1)
         result.at[index, "rute"] = route
         reachable.append(index)
