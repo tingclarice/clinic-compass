@@ -82,9 +82,11 @@ those processed files are missing or you intend to refresh the source data.
 
 Results are filtered to clinics whose recorded schedule says they are open at
 the selected time, and ranked by road distance. If no suitable reachable clinic
-is found, the radius expands to 5 km. Clinics with missing or unparseable hours
-are treated as **unknown**, never as open. Until verified operating-hours data
-is added, the app may return few or no results.
+is found, the radius expands to 5 km. Nearby clinics with missing or unparseable
+hours remain visible in the results, clearly marked **tidak diketahui**; they
+are never treated as open. Clinics marked **tutup** are also shown for context
+but are not open recommendations. Until verified operating-hours data is added,
+the app may show nearby clinics without any confirmed-open recommendation.
 
 ## Troubleshooting
 

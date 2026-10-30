@@ -18,6 +18,7 @@ class ClinicSearchResult:
     expanded: bool
     clinics_in_radius: int
     service_matches: int
+    verified_open: int
     unknown_hours: int
     closed_clinics: int
 
@@ -38,11 +39,12 @@ def search_clinics(
     radius_m=3000,
     max_radius_m=5000,
 ):
-    """Find reachable clinics that match a service and are known to be open.
+    """Find reachable clinics that match a service and report their hours status.
 
-    Unknown schedules are never treated as open. If no suitable, reachable
-    clinic is found at the requested radius, the search retries at the maximum
-    radius. ``user_location`` and clinic geometries must use EPSG:32749.
+    Clinics with unknown or closed hours remain visible in the results but are
+    never represented as open. If no known-open, reachable clinic is found at
+    the requested radius, the search retries at the maximum radius.
+    ``user_location`` and clinic geometries must use EPSG:32749.
     """
     if not isinstance(search_time, datetime):
         raise TypeError("search_time must be a datetime.")
@@ -81,10 +83,8 @@ def search_clinics(
         service_candidates["status_buka"] = statuses.map(
             {True: "buka", False: "tutup"}
         ).fillna("tidak diketahui")
-        open_candidates = service_candidates[
-            service_candidates["status_buka"] == "buka"
-        ].copy()
-        routed = route_clinics(graph, user_location, open_candidates)
+        routed = route_clinics(graph, user_location, service_candidates)
+        verified_open = int((routed["status_buka"] == "buka").sum())
 
         latest = ClinicSearchResult(
             clinics=routed,
@@ -92,10 +92,11 @@ def search_clinics(
             expanded=radius != radius_m,
             clinics_in_radius=len(candidates),
             service_matches=len(service_candidates),
+            verified_open=verified_open,
             unknown_hours=int((statuses.isna()).sum()),
             closed_clinics=int(statuses.isin([False]).sum()),
         )
-        if not routed.empty:
+        if verified_open:
             return latest
 
     return latest

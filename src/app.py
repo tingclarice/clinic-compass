@@ -174,20 +174,22 @@ def clinic_finder_app(clinics, boundaries, graph):
         result_layers.append(map_view.layers[-1])
 
         if summary.clinics.empty:
-            reason = (
-                "Tidak ada klinik yang terverifikasi buka dan dapat dijangkau "
-                "dalam radius pencarian."
-            )
+            if summary.clinics_in_radius == 0:
+                reason = "Tidak ada klinik di dalam radius pencarian."
+            elif summary.service_matches == 0:
+                reason = "Klinik ditemukan, tetapi tidak ada yang cocok dengan layanan pilihan."
+            else:
+                reason = "Klinik yang cocok tidak dapat dijangkau melalui jaringan jalan."
             result_html.value = (
                 f"<p><strong>{escape(reason)}</strong></p>"
                 f"<p>Radius akhir: {summary.radius_used_m / 1000:g} km"
                 f"{' (diperluas otomatis)' if summary.expanded else ''}. "
                 f"Klinik dalam radius: {summary.clinics_in_radius}; "
                 f"sesuai layanan: {summary.service_matches}; "
+                f"terverifikasi buka: {summary.verified_open}; "
                 f"jam tidak diketahui: {summary.unknown_hours}; "
-                f"tutup: {summary.closed_clinics}.</p>"
-                "<p>Jam yang tidak tersedia tidak dianggap sebagai klinik buka. "
-                "Lengkapi data jam terverifikasi sebelum mengandalkan hasil pencarian.</p>"
+                f"tercatat tutup: {summary.closed_clinics}.</p>"
+                "<p>Jam yang tidak tersedia tidak dianggap sebagai klinik buka.</p>"
             )
             return
 
@@ -213,6 +215,7 @@ def clinic_finder_app(clinics, boundaries, graph):
                 f"<td>{escape(str(clinic['Nama_Klinik']))}</td>"
                 f"<td>{escape(str(clinic['Jenis_Layanan']))}</td>"
                 f"<td>{clinic['jarak_rute_m'] / 1000:.2f} km</td>"
+                f"<td>{escape(str(clinic['status_buka']))}</td>"
                 f"<td>{escape(str(clinic['Jadwal_Operasional']))}</td>"
                 "</tr>"
             )
@@ -225,12 +228,14 @@ def clinic_finder_app(clinics, boundaries, graph):
             result_layers.append(map_view.layers[-1])
 
         result_html.value = (
-            f"<p>{len(summary.clinics)} klinik terverifikasi buka, diurutkan "
-            "menurut jarak rute terpendek. "
+            f"<p>{summary.verified_open} klinik terverifikasi buka; "
+            f"{summary.unknown_hours} jam tidak diketahui; "
+            f"{summary.closed_clinics} tercatat tutup. Hasil mencakup semua klinik "
+            "yang cocok dan dapat dijangkau, diurutkan menurut jarak rute. "
             f"Radius pencarian: {summary.radius_used_m / 1000:g} km"
             f"{' (diperluas otomatis)' if summary.expanded else ''}.</p>"
             "<table><thead><tr><th>Klinik</th><th>Layanan</th>"
-            "<th>Jarak rute</th><th>Jam</th></tr></thead><tbody>"
+            "<th>Jarak rute</th><th>Status jam</th><th>Jam terdaftar</th></tr></thead><tbody>"
             + "".join(rows)
             + "</tbody></table>"
         )

@@ -17,7 +17,8 @@ updated road network.
 Run `notebooks/02_clinic_search.ipynb` for the interactive map. Click to set a
 starting point, select a service and search time, then search within a 1, 3, or
 5 km radius. If no verified-open, reachable clinic matches, the search expands
-to 5 km. Clinics with unknown operating hours are excluded and reported separately.
+to 5 km. Clinics with unknown or closed operating hours remain listed with their
+status, but are never presented as confirmed-open recommendations.
 
 See [docs/setup_guide.md](docs/setup_guide.md) for cloning the feature branch,
 installing dependencies, and launching the interactive notebook.
