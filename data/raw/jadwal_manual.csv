@@ -1,46 +1,42 @@
 ﻿ID_Sumber,Nama_Klinik,Alamat,Kecamatan,Jenis_Layanan,Jadwal_Operasional,Sumber_Jam
-osm:n4478353955,Stephen,,Lakarsantri,Dokter gigi,,
-osm:n4491967593,Posyandu,,Lakarsantri,Dokter umum,,
-osm:n4491967594,Posyandu,,Lakarsantri,Dokter umum,,
-osm:n4491967595,Posyandu RW 03 Kel. Lakarsantri,,Lakarsantri,Dokter umum,,
-osm:n4493536650,Posyandu Balita RW 2 Kel. Jeruk,,Lakarsantri,Dokter umum,,
-osm:n4503436232,Posyandu RW 03 Kel. Lidah Kulon,Jalan Puri Lidah Kulon Indah,Lakarsantri,Dokter umum,,
-osm:n4519863509,Posyandu,,Lakarsantri,Dokter umum,,
-osm:n4519997488,Posyandu Balita Melati 4 dan Lansia,,Lakarsantri,Dokter umum,,
-osm:n4519997589,Posyandu Melati 1,,Lakarsantri,Dokter umum,,
-osm:n4576947775,Posyandu Lansia Harapan Pertiwi,Jalan Dukuh Jerawat,Pakal,Dokter umum,,
-osm:n4580700781,Posyandu Gotong Royong I,,Pakal,Dokter umum,,
-osm:n4580700784,Posyandu Lansia Anugerah,,Pakal,Dokter umum,,
-osm:n4586349373,Posyandu Melati,Jalan Pondok Benowo Indah,Pakal,Dokter umum,,
-osm:n4590428564,Posyandu Melati,,Pakal,Dokter umum,,
-osm:n4590428566,Posyandu Lansia Senja Bahagia,,Pakal,Dokter umum,,
-osm:n4590474592,Poskesdes Benowo Ceria,,Pakal,Dokter umum,,
-osm:n4590474593,Posyandu Lansia Melati,,Pakal,Dokter umum,,
-osm:n4599296027,Doktor umum,,Sambikerep,Dokter umum,,
-osm:n4599296028,Fatmawati,,Sambikerep,Dokter gigi,,
-osm:n4599296302,Praktek dokter umum,,Lakarsantri,Dokter umum,"Mo-Su 05:00-09:00, 17:00-21:00",OSM
-osm:n4625438061,Posyandu Harapan Bangsa,,Pakal,Dokter umum,,
-osm:n4628345071,Posyandu RW IV Pakal,,Pakal,Dokter umum,,
-osm:n5591713704,Ezmo,,Sambikerep,Dokter gigi,,
-osm:w451500928,Posyandu Anggrek,Sumberjaya,Pakal,Dokter umum,,
-osm:w451527942,Posyandu Lansia Makarya,Dukuh Tambakdono,Pakal,Dokter umum,,
-osm:w451645249,Klinik Abdi Mulia,Jalan HR. Muhammad 401-403,Sukomanunggal,Dokter umum,,
-osm:w452577220,Posyandu Balita Rw.3 Kel. Jeruk,Jalan Raya Jeruk,Lakarsantri,Dokter umum,,
-osm:w453637968,Bidan Delima,Puri Lidah Kulon Indah Blok A no.8,Lakarsantri,Dokter umum,,
-osm:w453642807,Posyandu Mawar,Tandes Lor I,Tandes,Dokter umum,,
-osm:w453646193,Royal Clinic,Jalan Darmo Boulevard,Sukomanunggal,Dokter umum,,
-osm:w453650878,Posyandu Cempaka II,jalan sono indah iv,Sukomanunggal,Dokter umum,,
-osm:w454994578,Klinik Kasih Karunia,Jalan Raya Darmo Permai,Sukomanunggal,Dokter umum,,
-osm:w455434214,Klinik Pratama Dinayla Utama,simorejo sari b 54,Sukomanunggal,Dokter umum,,
-osm:w455611437,Posyandu Melati 2 RW 2 Sumur Welut,Jalan Raya Sumur Welut,Lakarsantri,Dokter umum,,
-osm:w456282384,Posyandu Merpati,,Lakarsantri,Dokter umum,,
 osm:w457810393,BPM Afah Fahmi,Jalan Aswm III no. 8,Asemrowo,Dokter umum,,
+osm:w453637968,Bidan Delima,Puri Lidah Kulon Indah Blok A no.8,Lakarsantri,Dokter umum,,
+osm:n4599296302,Praktek dokter umum,,Lakarsantri,Dokter umum,"Mo-Su 05:00-09:00, 17:00-21:00",OSM
+osm:n4478353955,Stephen,,Lakarsantri,Dokter gigi,,
+osm:w462285627,3D Clinic Pakal,Jalan Babat jerawat dalam,Pakal,Penyakit dalam,Mo-Fr 16:00-21:00,Website resmi 3D Clinic
+osm:w460673093,Klinik PHC Benowo,pbi pp no.22,Pakal,Dokter umum,Mo-Su 07:00-21:00,"Lokanesia (faskes BPJS, 2020)"
+osm:n4599296027,Doktor umum,,Sambikerep,Dokter umum,,
+osm:n5591713704,Ezmo,,Sambikerep,Dokter gigi,Mo-Fr 09:00-21:00; Sa 09:00-15:00,Verifikasi manual
+osm:n4599296028,Fatmawati,,Sambikerep,Dokter gigi,,
+osm:w451645249,Klinik Abdi Mulia,Jalan HR. Muhammad 401-403,Sukomanunggal,"Dokter umum, Dokter gigi, Penyakit dalam, Dokter kandungan, THT",Mo-Sa 07:00-21:00,Website resmi Klinik Abdi Mulia
+osm:w454994578,Klinik Kasih Karunia,Jalan Raya Darmo Permai,Sukomanunggal,"Dokter umum, Dokter gigi, Dokter kulit",Mo-Sa 07:30-21:30,Website resmi Klinik Kasih Karunia
 osm:w459492026,Klinik Pratama Am Nur,Jalan Kalikundang,Sukomanunggal,Dokter umum,,
-osm:w460435672,Posyandu Lansia Seroja,Dukuh Jawar Tambakdono,Pakal,Dokter umum,,
-osm:w460476420,Posyandu Gotong Royong II,Jalan Pakal Timur III,Pakal,Dokter umum,,
-osm:w460673093,Klinik PHC Benowo,pbi pp no.22,Pakal,Dokter umum,,
-osm:w462285622,Posyandu Durian,Jalan Pondok Benowo Indah,Pakal,Dokter umum,,
-osm:w462285627,3D Clinic Pakal,Jalan Babat jerawat dalam,Pakal,Dokter umum,,
-osm:w463796368,Klinik Nayaka Husada,raya darmo indah,Tandes,Dokter umum,,
-osm:w463796369,Posyandu Sekar Sari,Tandes kidul gang makam,Tandes,Dokter umum,,
-osm:w465103030,Posyandu Graha Kencana,Perumahan Graha Kencana Pakal,Pakal,Dokter umum,,
+osm:w455434214,Klinik Pratama Dinayla Utama,simorejo sari b 54,Sukomanunggal,Dokter umum,"Mo-Fr 08:00-12:00,16:00-20:00; Sa 08:00-14:00","Lokanesia (faskes BPJS, 2020)"
+osm:w453646193,Royal Clinic,Jalan Darmo Boulevard,Sukomanunggal,"Dokter umum, Dokter gigi",Mo-Su 09:00-17:00,Hello Sehat
+osm:w463796368,Klinik Nayaka Husada,raya darmo indah,Tandes,Dokter umum,Mo-Sa 08:00-21:00,"Lokanesia (faskes BPJS, 2020)"
+osm:n4426073009,Ahli gigi,,Luar wilayah,Dokter gigi,,
+osm:w455595527,Balai Pengobaran Sawung,Jalan Kalianak Timur Lebar,Luar wilayah,Dokter umum,,
+osm:w455427429,Balai Pengobatan dan Rumah Bersalin Al Azhar,Jalan Dupak Bandarejo No. 23,Luar wilayah,Dokter umum,"Mo-Su 07:00-13:00,19:00-21:00","Lokanesia (faskes BPJS, 2020)"
+osm:n9833266137,Bidan Sudjiati Frans,,Luar wilayah,Dokter umum,,
+osm:w448272385,Dr Felix,,Luar wilayah,Dokter umum,,
+osm:w453640265,Drg Elfreda Sidharta,,Luar wilayah,Dokter gigi,,
+osm:n4193081889,Family Dental Care,"JL. Kupang Indah 16, No. 22",Luar wilayah,Dokter gigi,,
+osm:n5354542046,Gigi Sehat,,Luar wilayah,Dokter gigi,"Mo-Fr 08:00-13:30, 15:00-21:00; Sa 15:00-18:00",OSM
+osm:w454776218,Klinik Alma Karya,Jalan Pakis Sidorejo I no. 2-4,Luar wilayah,Dokter umum,,
+osm:w460452633,Klinik Dokter Eko,manukan lor,Luar wilayah,Dokter umum,24 jam,AlamatSehat (2025)
+osm:w453913629,Klinik Gigi,Jalan Tidar,Luar wilayah,Dokter gigi,,
+osm:w460452660,Klinik Manukan,manukan lor,Luar wilayah,Dokter umum,,
+osm:w454131822,Klinik Medpoint,Jalan Raya Lontar 229,Luar wilayah,Dokter umum,Mo-Sa 08:00-21:00,"Lokanesia (faskes BPJS, 2020)"
+osm:w454131823,Klinik Miftachul Munir Medika,Jalan Raya Lontar 190,Luar wilayah,Dokter umum,24 jam,"AlamatSehat (2025); Lokanesia (faskes BPJS, 2020)"
+osm:w451535366,Klinik Perdana Husada,manukan krajan,Luar wilayah,"Dokter umum, Dokter gigi",Mo-Su 08:00-21:00,"Instagram resmi klinik; Lokanesia (faskes BPJS, 2020)"
+osm:w458029990,Klinik Petemon Husada,Jalan Petemon Kali,Luar wilayah,Dokter umum,,
+osm:w459976950,Klinik Pratama,Jalan Dukuh Kupang VI,Luar wilayah,Dokter umum,,
+osm:w455463072,"Klinik Pratama ""BDS PACUAN KUDA""",Jalan Pacuan Kuda No. 15 a,Luar wilayah,Dokter umum,,
+osm:w459482003,Klinik Pratama Gunungsari,Jalan Golf 1A,Luar wilayah,Dokter umum,,
+osm:w454187199,Klinik Pratama Rawat Inap Putri Rahayu,Jalan Mastrip IX/9,Luar wilayah,Dokter umum,24 jam,"Lokanesia (faskes BPJS, 2020)"
+osm:w451501279,Klinik Pratama Sartika 59,Jalan Manukan Tengah,Luar wilayah,Dokter umum,Mo-Sa 08:00-20:00,"Lokanesia (faskes BPJS, 2020)"
+osm:w459958973,Klinik Pusura,balongsari tama,Luar wilayah,"Dokter umum, Dokter gigi, Dokter mata",24 jam,AlamatSehat (2025)
+osm:n4548834132,Klinik tanpa nama,,Luar wilayah,Dokter gigi,,
+osm:n5369425864,Klinik tanpa nama,,Luar wilayah,Dokter umum,,
+osm:w451659196,Poliklinik SATBRIMOB Polda Jatim,Jalan Gresik No. 39,Luar wilayah,Dokter umum,,
+osm:w451664232,Poliklinik UWK,Jalan Dukuh Kupang XXV No. 54,Luar wilayah,Dokter umum,,

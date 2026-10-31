@@ -31,7 +31,8 @@ CRS_WGS84 = "EPSG:4326"      # lintang/bujur, digunakan untuk penyimpanan GeoJSO
 MARGIN_M = 2000              # area pengambilan data diperluas 2 km dari batas wilayah
 TAGS_KLINIK = {"amenity": ["clinic", "doctors", "dentist"],
                "healthcare": ["clinic", "doctor", "dentist"]}
-KATA_DIKECUALIKAN = ("puskesmas", "pustu")     # cakupan data: klinik, tidak termasuk puskesmas
+KATA_DIKECUALIKAN = ("puskesmas", "puskemas", "pusmesmas", "pustu", "posyandu",
+                     "poskesdes", "poskeskel", "pos kesehatan")   # cakupan data: klinik saja
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
@@ -84,6 +85,7 @@ def ambil_batas():
         b = _overpass(ox.features_from_place, "Surabaya, Jawa Timur, Indonesia",
                       tags={"boundary": "administrative", "admin_level": "6"})
         b = b[b.geom_type.isin(["Polygon", "MultiPolygon"])].copy()
+        b = b[b["admin_level"].astype(str) == "6"]     # hanya batas kecamatan, bukan kelurahan
         b["kec"] = b["name"].str.replace(r"^(Kecamatan|Kec\.)\s*", "", regex=True).str.strip()
         b = b[b["kec"].isin(KECAMATAN)].drop_duplicates("kec")
         if b["kec"].nunique() < len(KECAMATAN):
@@ -424,6 +426,11 @@ def finalisasi(klinik, batas):
         k[kolom] = k[kolom].fillna("") if kolom in k.columns else ""
     k["Jenis_Layanan"] = k["Jenis_Layanan"].apply(lambda t: ", ".join(daftar_layanan(t)))
     k["Status_24_Jam"] = k["Jadwal_Operasional"].apply(lambda t: is_24_jam(parse_jadwal(t)))
+    # Klinik tanpa jam operasional yang terbaca tidak disertakan dalam dataset
+    tanpa_jam = k["Jadwal_Operasional"].apply(lambda t: parse_jadwal(t) is None)
+    if tanpa_jam.any():
+        print(f"Klinik tanpa jam operasional tidak disertakan: {int(tanpa_jam.sum())} data")
+    k = k[~tanpa_jam]
     k = k.sort_values(["Di_Wilayah", "Kecamatan", "Nama_Klinik"], ascending=[False, True, True])
     k["Clinic_ID"] = [f"K{i + 1:03d}" for i in range(len(k))]
     salah = k[(k["Jadwal_Operasional"] != "") & k["Jadwal_Operasional"].apply(lambda t: parse_jadwal(t) is None)]
