@@ -4,7 +4,13 @@ import pytest
 from shapely.geometry import Point
 from shapely.geometry import LineString
 
-from src.routing import route_clinics
+from src.routing import (
+    move_along_route,
+    move_along_routes,
+    move_to_reachable_road,
+    route_clinics,
+    snap_to_nearest_road,
+)
 
 CRS = "EPSG:32749"
 
@@ -51,6 +57,167 @@ def test_route_geometry_follows_street_edge_geometry(road_graph):
     route = route_clinics(road_graph, Point(0, 0), clinics)["rute"].iloc[0]
 
     assert (500, 300) in list(route.coords)
+
+
+def test_snap_to_nearest_road_edge(road_graph):
+    snapped = snap_to_nearest_road(road_graph, Point(500, 100))
+
+    assert snapped.equals(Point(500, 0))
+
+
+def test_snap_to_nearest_road_edge_geometry(road_graph):
+    road_graph[1][2][0]["geometry"] = LineString(
+        [(0, 0), (500, 300), (1000, 0)]
+    )
+
+    snapped = snap_to_nearest_road(road_graph, Point(500, 320))
+
+    assert snapped.equals(Point(500, 300))
+
+
+def test_moves_north_onto_connected_road():
+    graph = nx.MultiDiGraph(crs=CRS)
+    graph.add_node(1, x=0, y=0)
+    graph.add_node(2, x=500, y=0)
+    graph.add_node(3, x=1000, y=0)
+    graph.add_node(4, x=500, y=1000)
+    graph.add_edge(1, 2, length=500)
+    graph.add_edge(2, 3, length=500)
+    graph.add_edge(2, 4, length=1000)
+
+    moved = move_to_reachable_road(
+        graph, graph.to_undirected(), Point(500, 0), "atas"
+    )
+
+    assert moved.equals(Point(500, 50))
+
+
+def test_moves_along_same_road_segment(road_graph):
+    moved = move_to_reachable_road(
+        road_graph, road_graph.to_undirected(), Point(500, 0), "kanan"
+    )
+
+    assert moved.equals(Point(550, 0))
+
+
+def test_moves_north_along_diagonal_road():
+    graph = nx.MultiDiGraph(crs=CRS)
+    graph.add_node(1, x=0, y=0)
+    graph.add_node(2, x=1000, y=1000)
+    graph.add_edge(1, 2, length=1414, geometry=LineString([(0, 0), (1000, 1000)]))
+
+    moved = move_to_reachable_road(
+        graph, graph.to_undirected(), Point(500, 500), "atas"
+    )
+
+    assert moved.x > 500
+    assert moved.y > 500
+    assert moved.y == pytest.approx(moved.x)
+
+
+def test_moves_along_route_without_leaving_blue_line():
+    route = LineString([(0, 0), (100, 100), (100, 300)])
+
+    moved = move_along_route(
+        route, Point(100, 100), "atas", route_crs=CRS
+    )
+
+    assert moved.distance(route) == pytest.approx(0)
+    assert moved.y > 100
+    assert moved.distance(Point(100, 100)) <= 50
+
+
+def test_moves_downward_back_along_route():
+    route = LineString([(0, 0), (100, 100), (100, 300)])
+
+    moved = move_along_route(
+        route, Point(100, 150), "bawah", route_crs=CRS
+    )
+
+    assert moved.distance(route) == pytest.approx(0)
+    assert moved.y < 150
+
+
+def test_route_movement_does_not_snap_to_parallel_road():
+    route = LineString([(0, 0), (0, 500)])
+
+    moved = move_along_route(
+        route, Point(0, 250), "kanan", route_crs=CRS
+    )
+
+    assert moved is None
+
+
+def test_moves_along_any_displayed_route():
+    blue_route = LineString([(0, 0), (0, 500)])
+    yellow_route = LineString([(0, 0), (500, 0)])
+
+    moved = move_along_routes(
+        [blue_route, yellow_route],
+        Point(0, 0),
+        "kanan",
+        route_crs=CRS,
+    )
+
+    assert moved.distance(yellow_route) == pytest.approx(0)
+    assert moved.x > 0
+
+
+def test_moves_in_direction_on_route_list_with_mixed_colors():
+    blue_route = LineString([(0, 0), (0, 500)])
+    yellow_route = LineString([(0, 0), (500, 0)])
+
+    moved = move_along_routes(
+        [blue_route, yellow_route],
+        Point(0, 0),
+        "atas",
+        route_crs=CRS,
+    )
+
+    assert moved.distance(blue_route) == pytest.approx(0)
+    assert moved.y > 0
+
+
+def test_does_not_jump_to_disconnected_road(road_graph):
+    road_graph.add_node(6, x=400, y=50)
+    road_graph.add_node(7, x=600, y=50)
+    road_graph.add_edge(6, 7, length=200)
+
+    moved = move_to_reachable_road(
+        road_graph, road_graph.to_undirected(), Point(500, 0), "atas"
+    )
+
+    assert moved is None
+
+
+def test_does_not_jump_to_road_reachable_only_by_long_detour():
+    graph = nx.MultiDiGraph(crs=CRS)
+    graph.add_node(1, x=0, y=0)
+    graph.add_node(2, x=400, y=0)
+    graph.add_node(3, x=600, y=0)
+    graph.add_node(4, x=1000, y=0)
+    graph.add_node(5, x=400, y=50)
+    graph.add_node(6, x=600, y=50)
+    graph.add_edge(1, 2, length=400)
+    graph.add_edge(2, 3, length=200)
+    graph.add_edge(3, 4, length=400)
+    graph.add_edge(2, 5, length=50)
+    graph.add_edge(5, 6, length=200)
+    graph.add_edge(6, 3, length=50)
+
+    moved = move_to_reachable_road(
+        graph, graph.to_undirected(), Point(500, 0), "atas"
+    )
+
+    assert moved is None
+
+
+def test_does_not_move_when_no_road_exists_in_direction(road_graph):
+    moved = move_to_reachable_road(
+        road_graph, road_graph.to_undirected(), Point(500, 0), "atas"
+    )
+
+    assert moved is None
 
 
 def test_omits_clinic_disconnected_from_road_graph(road_graph):
