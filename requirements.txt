@@ -4,4 +4,9 @@ pandas
 numpy
 matplotlib
 networkx
+scipy
+opening-hours-py
 ipykernel
+ipywidgets>=8.0
+ipyleaflet>=0.19
+jupyterlab>=4.0
