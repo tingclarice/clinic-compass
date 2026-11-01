@@ -77,8 +77,11 @@ those processed files are missing or you intend to refresh the source data.
 1. Click the map to set the user's starting location.
 2. Choose a medical service, date, time, and search radius.
 3. Click **Cari klinik**.
-4. Use the directional buttons to adjust the location by 50 metres, then search
-   again if needed.
+4. Adjust the map height with the size slider.
+5. Use the directional buttons to move by 50 metres along locally reachable
+   roads in the driving network. Before a search, movement follows reachable
+   roads; after results appear, it can follow any displayed blue or yellow
+   route. Existing routes and results remain visible until the next search.
 
 Results are filtered to clinics whose recorded schedule says they are open at
 the selected time, and ranked by road distance. If no suitable reachable clinic

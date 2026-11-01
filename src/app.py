@@ -7,7 +7,7 @@ import json
 import geopandas as gpd
 from shapely.geometry import Point
 
-from src.lokasi import geser
+from src.routing import move_along_routes, move_to_reachable_road
 from src.search import search_clinics
 from src.spatial import CRS_METER
 
@@ -16,12 +16,22 @@ def clinic_finder_app(clinics, boundaries, graph):
     """Build a map-based clinic search widget for use in a Jupyter notebook."""
     import ipywidgets as widgets
     from IPython.display import display
-    from ipyleaflet import Circle, GeoJSON, Map, Marker, Polyline, basemaps
+    from ipyleaflet import (
+        AwesomeIcon,
+        Circle,
+        CircleMarker,
+        GeoJSON,
+        Map,
+        Marker,
+        Polyline,
+        basemaps,
+    )
 
     if clinics.crs is None or clinics.crs.to_string() != CRS_METER:
         raise ValueError(f"clinics must use {CRS_METER}.")
     if boundaries.crs is None:
         raise ValueError("Boundary CRS is required.")
+    movement_graph = graph.to_undirected()
 
     boundary_wgs84 = boundaries.to_crs("EPSG:4326")
     center = gpd.GeoSeries(
@@ -47,6 +57,21 @@ def clinic_finder_app(clinics, boundaries, graph):
         scroll_wheel_zoom=True,
         layout=widgets.Layout(width="70%", height="600px"),
     )
+    map_height = widgets.IntSlider(
+        value=600,
+        min=400,
+        max=1000,
+        step=50,
+        description="Tinggi peta (px):",
+        continuous_update=True,
+        layout=widgets.Layout(width="100%"),
+    )
+
+    map_height.observe(
+        lambda change: setattr(map_view.layout, "height", f"{change['new']}px"),
+        names="value",
+    )
+
     map_view.add_layer(
         GeoJSON(
             data=boundary_geojson,
@@ -85,9 +110,11 @@ def clinic_finder_app(clinics, boundaries, graph):
     result_html = widgets.HTML(
         value="<p>Klik peta untuk memilih lokasi awal.</p>"
     )
+    move_status = widgets.HTML()
     user_location = None
     user_marker = None
     result_layers = []
+    active_routes = []
 
     def clear_results():
         while result_layers:
@@ -100,10 +127,14 @@ def clinic_finder_app(clinics, boundaries, graph):
         location_wgs84 = gpd.GeoSeries(
             [user_location], crs=CRS_METER
         ).to_crs("EPSG:4326").iloc[0]
-        user_marker = Marker(
+        user_marker = CircleMarker(
             location=(location_wgs84.y, location_wgs84.x),
             title="Lokasi pencarian",
-            draggable=False,
+            radius=8,
+            color="#ffffff",
+            weight=2,
+            fill_color="#dc2626",
+            fill_opacity=1,
         )
         map_view.add_layer(user_marker)
         search_button.disabled = False
@@ -111,7 +142,7 @@ def clinic_finder_app(clinics, boundaries, graph):
             button.disabled = False
 
     def on_map_interaction(**event):
-        nonlocal user_location
+        nonlocal active_routes, user_location
         if event.get("type") != "click":
             return
         latitude, longitude = event["coordinates"]
@@ -119,6 +150,8 @@ def clinic_finder_app(clinics, boundaries, graph):
             [Point(longitude, latitude)], crs="EPSG:4326"
         ).to_crs(CRS_METER).iloc[0]
         clear_results()
+        active_routes = []
+        move_status.value = ""
         show_user_location()
         result_html.value = "<p>Lokasi dipilih. Pilih kriteria lalu cari.</p>"
 
@@ -131,20 +164,36 @@ def clinic_finder_app(clinics, boundaries, graph):
 
         def move_user(_button, direction=direction):
             nonlocal user_location
-            user_location = geser(user_location, direction)
-            clear_results()
+            if active_routes:
+                moved_location = move_along_routes(
+                    active_routes,
+                    user_location,
+                    direction,
+                    route_crs=graph.graph["crs"],
+                )
+            else:
+                moved_location = move_to_reachable_road(
+                    graph, movement_graph, user_location, direction
+                )
+            if moved_location is None:
+                move_status.value = "<p>Tidak ada rute ke arah itu; lokasi tidak berubah.</p>"
+                return
+            user_location = moved_location
+            move_status.value = ""
             show_user_location()
             location_wgs84 = gpd.GeoSeries(
                 [user_location], crs=CRS_METER
             ).to_crs("EPSG:4326").iloc[0]
             map_view.center = (location_wgs84.y, location_wgs84.x)
-            result_html.value = "<p>Lokasi diperbarui. Jalankan pencarian lagi.</p>"
 
         button.on_click(move_user)
         move_buttons.append(button)
 
     def run_search(_button):
+        nonlocal active_routes
         clear_results()
+        active_routes = []
+        move_status.value = ""
         if date_picker.value is None:
             raise ValueError("Pilih tanggal pencarian.")
         search_time = datetime.combine(
@@ -193,8 +242,14 @@ def clinic_finder_app(clinics, boundaries, graph):
             )
             return
 
+        active_routes = [
+            clinic["rute"]
+            for _, clinic in summary.clinics.iterrows()
+            if clinic["rute"] is not None
+        ]
         rows = []
         for _, clinic in summary.clinics.iterrows():
+            is_closed = clinic["status_buka"] == "tutup"
             point_wgs84 = gpd.GeoSeries(
                 [clinic.geometry], crs=clinics.crs
             ).to_crs("EPSG:4326").iloc[0]
@@ -204,7 +259,7 @@ def clinic_finder_app(clinics, boundaries, graph):
             map_view.add_layer(
                 Polyline(
                     locations=[(y, x) for x, y in route_wgs84.coords],
-                    color="#2563eb",
+                    color="#eab308" if is_closed else "#2563eb",
                     weight=4,
                     opacity=0.75,
                 )
@@ -223,6 +278,17 @@ def clinic_finder_app(clinics, boundaries, graph):
                 Marker(
                     location=(point_wgs84.y, point_wgs84.x),
                     title=str(clinic["Nama_Klinik"]),
+                    **(
+                        {
+                            "icon": AwesomeIcon(
+                                name="map-marker",
+                                marker_color="yellow",
+                                icon_color="white",
+                            )
+                        }
+                        if is_closed
+                        else {}
+                    ),
                 )
             )
             result_layers.append(map_view.layers[-1])
@@ -234,6 +300,7 @@ def clinic_finder_app(clinics, boundaries, graph):
             "yang cocok dan dapat dijangkau, diurutkan menurut jarak rute. "
             f"Radius pencarian: {summary.radius_used_m / 1000:g} km"
             f"{' (diperluas otomatis)' if summary.expanded else ''}.</p>"
+            "<p>Tombol arah dapat mengikuti semua rute yang ditampilkan.</p>"
             "<table><thead><tr><th>Klinik</th><th>Layanan</th>"
             "<th>Jarak rute</th><th>Status jam</th><th>Jam terdaftar</th></tr></thead><tbody>"
             + "".join(rows)
@@ -249,8 +316,10 @@ def clinic_finder_app(clinics, boundaries, graph):
             date_picker,
             hour,
             radius,
+            map_height,
             widgets.HTML("<b>Adjust location (50 m)</b>"),
             widgets.HBox(move_buttons),
+            move_status,
             search_button,
             result_html,
         ],
