@@ -1,5 +1,8 @@
 """Road-network routing for Clinic Compass."""
 
+import ast
+import math
+from bisect import bisect_right
 from pathlib import Path
 
 import geopandas as gpd
@@ -256,6 +259,210 @@ def move_along_routes(
     return max(candidates, key=lambda candidate: candidate[0])[1]
 
 
+def _edge_data(graph, start, end):
+    """Return the attributes of the shortest edge between two nodes."""
+    edge_data = graph.get_edge_data(start, end)
+    if graph.is_multigraph():
+        edge_data = min(
+            edge_data.values(), key=lambda data: data.get("length", float("inf"))
+        )
+    return edge_data
+
+
+def _edge_coordinates(graph, start, end, edge_data):
+    """Return edge coordinates ordered from the start node to the end node."""
+    geometry = edge_data.get("geometry")
+    start_xy = (graph.nodes[start]["x"], graph.nodes[start]["y"])
+    if geometry is None:
+        return [start_xy, (graph.nodes[end]["x"], graph.nodes[end]["y"])]
+    coordinates = list(geometry.coords)
+    if Point(coordinates[-1]).distance(Point(start_xy)) < Point(coordinates[0]).distance(
+        Point(start_xy)
+    ):
+        coordinates.reverse()
+    return coordinates
+
+
+def _street_name(edge_data):
+    """Readable street name of an edge; OSM may store several names as a list."""
+    name = edge_data.get("name")
+    if isinstance(name, str) and name.startswith("["):
+        try:
+            name = ast.literal_eval(name)
+        except (ValueError, SyntaxError):
+            pass
+    if isinstance(name, (list, tuple)):
+        name = next((str(item) for item in name if str(item).strip()), None)
+    if name is None or (isinstance(name, float) and math.isnan(name)) or not str(name).strip():
+        return "jalan tanpa nama"
+    return str(name).strip()
+
+
+def _bearing(start, end):
+    """Compass bearing in degrees (0 = north, 90 = east) from start to end."""
+    return math.degrees(math.atan2(end[0] - start[0], end[1] - start[1])) % 360
+
+
+def _turn_angle(bearing_in, bearing_out):
+    """Signed change of heading in degrees: positive turns right, negative turns left."""
+    return (bearing_out - bearing_in + 540) % 360 - 180
+
+
+def _turn_instruction(angle):
+    """Indonesian turn instruction and arrow symbol for a heading change."""
+    size = abs(angle)
+    side = "kanan" if angle > 0 else "kiri"
+    if size < 20:
+        return "Lurus", "⬆"
+    if size < 45:
+        return f"Serong {side}", "↗" if angle > 0 else "↖"
+    if size < 150:
+        return f"Belok {side}", "➡" if angle > 0 else "⬅"
+    return "Putar balik", "↩"
+
+
+def route_steps(graph, road_path, start_connector_m=0.0, end_connector_m=0.0,
+                destination_name="klinik", turn_threshold=45, min_segment_m=15):
+    """Turn-by-turn guidance for a road path found by Dijkstra.
+
+    Consecutive edges on the same street without a sharp turn are merged into
+    one segment. Each step stores its instruction, the distance travelled in
+    that step (metres), the arrow symbol, the point where the step starts
+    (graph CRS) and ``offset_m``: how far along the route_clinics() route
+    geometry the step starts. Offsets use geometry lengths rather than the OSM
+    ``length`` attribute so they can be compared with ``route.project()``.
+    """
+    segments = []
+    for start, end in zip(road_path, road_path[1:]):
+        edge_data = _edge_data(graph, start, end)
+        coordinates = _edge_coordinates(graph, start, end, edge_data)
+        if len(coordinates) < 2:
+            continue
+        name = _street_name(edge_data)
+        geometry_length = LineString(coordinates).length
+        length = float(edge_data.get("length", geometry_length))
+        bearing_in = _bearing(coordinates[0], coordinates[1])
+        bearing_out = _bearing(coordinates[-2], coordinates[-1])
+        if segments:
+            previous = segments[-1]
+            angle = _turn_angle(previous["bearing_out"], bearing_in)
+            if previous["name"] == name and abs(angle) < turn_threshold:
+                previous["length"] += length
+                previous["geometry_length"] += geometry_length
+                previous["bearing_out"] = bearing_out
+                continue
+        segments.append({
+            "name": name,
+            "length": length,
+            "geometry_length": geometry_length,
+            "bearing_in": bearing_in,
+            "bearing_out": bearing_out,
+            "point": coordinates[0],
+        })
+
+    merged = []
+    for segment in segments:
+        if merged and segment["length"] < min_segment_m:
+            merged[-1]["length"] += segment["length"]
+            merged[-1]["geometry_length"] += segment["geometry_length"]
+            merged[-1]["bearing_out"] = segment["bearing_out"]
+        else:
+            merged.append(segment)
+
+    steps = []
+    offset = start_connector_m
+    if merged:
+        first = merged[0]
+        steps.append({
+            "instruction": f"Menuju {first['name']}",
+            "distance_m": round(start_connector_m, 1),
+            "symbol": "📍",
+            "point": None,
+            "offset_m": 0.0,
+        })
+        steps.append({
+            "instruction": f"Ikuti {first['name']}",
+            "distance_m": round(first["length"], 1),
+            "symbol": "⬆",
+            "point": first["point"],
+            "offset_m": offset,
+        })
+        offset += first["geometry_length"]
+        for previous, segment in zip(merged, merged[1:]):
+            action, symbol = _turn_instruction(
+                _turn_angle(previous["bearing_out"], segment["bearing_in"])
+            )
+            steps.append({
+                "instruction": f"{action} ke {segment['name']}",
+                "distance_m": round(segment["length"], 1),
+                "symbol": symbol,
+                "point": segment["point"],
+                "offset_m": offset,
+            })
+            offset += segment["geometry_length"]
+    steps.append({
+        "instruction": f"Tiba di {destination_name}",
+        "distance_m": round(end_connector_m, 1),
+        "symbol": "🏁",
+        "point": None,
+        "offset_m": offset,
+    })
+    return steps
+
+
+def navigation_state(route, steps, position, arrive_m=15, off_route_m=30):
+    """Live turn-by-turn state for a user on a selected clinic route.
+
+    ``route`` is the route_clinics() LineString, which starts at the search
+    location; ``steps`` are its route_steps() guidance and ``position`` must
+    use the route's CRS. The active step is the one being travelled: it moves
+    to the next step as soon as the user passes that step's starting point.
+    The next instruction is the manoeuvre that ends the active step. Arriving
+    is the final manoeuvre, so its distance is the remaining route distance.
+    Off route, no step is active.
+    """
+    if not isinstance(route, LineString):
+        raise TypeError("route must be a Shapely LineString.")
+    if not isinstance(position, Point):
+        raise TypeError("position must be a Shapely Point.")
+    if not steps or any("offset_m" not in step for step in steps):
+        raise ValueError("steps must be route_steps() output with offsets.")
+
+    distance_from_route = route.distance(position)
+    state = {
+        "active_index": None,
+        "next_index": None,
+        "then_index": None,
+        "distance_to_next_m": None,
+        "remaining_m": None,
+        "arrived": False,
+        "off_route": distance_from_route > off_route_m,
+        "distance_from_route_m": round(distance_from_route, 1),
+    }
+    if state["off_route"]:
+        return state
+
+    progress = route.project(position)
+    remaining = max(route.length - progress, 0.0)
+    last = len(steps) - 1
+    state["remaining_m"] = round(remaining, 1)
+    if remaining < arrive_m:
+        state.update(active_index=last, arrived=True)
+        return state
+
+    offsets = [step["offset_m"] for step in steps]
+    active = max(bisect_right(offsets, progress) - 1, 0)
+    next_index = min(active + 1, last)
+    to_next = remaining if next_index == last else offsets[next_index] - progress
+    state.update(
+        active_index=active,
+        next_index=next_index,
+        then_index=next_index + 1 if next_index < last else None,
+        distance_to_next_m=round(to_next, 1),
+    )
+    return state
+
+
 def load_road_graph(boundaries, cache_path=ROAD_GRAPH_CACHE):
     """Load a cached OSM drive graph or download and cache one for the study area."""
     cache_path = Path(cache_path)
@@ -302,6 +509,7 @@ def route_clinics(graph, user_location, clinics):
     result = clinics.copy()
     result["jarak_rute_m"] = None
     result["rute"] = None
+    result["langkah_rute"] = None
     if result.empty:
         return result
 
@@ -315,6 +523,7 @@ def route_clinics(graph, user_location, clinics):
     )
 
     reachable = []
+    steps_by_clinic = {}
     for index, row in clinic_points.iterrows():
         clinic_point = row.geometry
         destination_node = ox.distance.nearest_nodes(
@@ -324,12 +533,13 @@ def route_clinics(graph, user_location, clinics):
             continue
 
         road_path = paths[destination_node]
-        snap_distance = user_point.distance(
+        start_connector = user_point.distance(
             Point(graph.nodes[origin_node]["x"], graph.nodes[origin_node]["y"])
-        ) + clinic_point.distance(
+        )
+        end_connector = clinic_point.distance(
             Point(graph.nodes[destination_node]["x"], graph.nodes[destination_node]["y"])
         )
-        total_distance = distances[destination_node] + snap_distance
+        total_distance = distances[destination_node] + start_connector + end_connector
         origin_point = Point(
             graph.nodes[origin_node]["x"], graph.nodes[origin_node]["y"]
         )
@@ -338,22 +548,7 @@ def route_clinics(graph, user_location, clinics):
         )
         route_coordinates = [(user_point.x, user_point.y), (origin_point.x, origin_point.y)]
         for start, end in zip(road_path, road_path[1:]):
-            edge_data = graph.get_edge_data(start, end)
-            if graph.is_multigraph():
-                edge_data = min(
-                    edge_data.values(), key=lambda data: data.get("length", float("inf"))
-                )
-            geometry = edge_data.get("geometry")
-            if geometry is None:
-                segment = [
-                    (graph.nodes[start]["x"], graph.nodes[start]["y"]),
-                    (graph.nodes[end]["x"], graph.nodes[end]["y"]),
-                ]
-            else:
-                segment = list(geometry.coords)
-                start_xy = (graph.nodes[start]["x"], graph.nodes[start]["y"])
-                if Point(segment[-1]).distance(Point(start_xy)) < Point(segment[0]).distance(Point(start_xy)):
-                    segment.reverse()
+            segment = _edge_coordinates(graph, start, end, _edge_data(graph, start, end))
             route_coordinates.extend(segment[1:])
         route_coordinates.extend(
             [(destination_point.x, destination_point.y), (clinic_point.x, clinic_point.y)]
@@ -361,8 +556,17 @@ def route_clinics(graph, user_location, clinics):
         route = LineString(route_coordinates)
         result.at[index, "jarak_rute_m"] = round(total_distance, 1)
         result.at[index, "rute"] = route
+        destination_name = next(
+            (str(row[column]) for column in ("Nama_Klinik", "name")
+             if column in row.index and str(row[column]).strip()),
+            "klinik",
+        )
+        steps_by_clinic[index] = route_steps(
+            graph, road_path, start_connector, end_connector, destination_name
+        )
         reachable.append(index)
 
+    result["langkah_rute"] = [steps_by_clinic.get(index) for index in result.index]
     result = result.loc[reachable].copy()
     result["jarak_rute_m"] = result["jarak_rute_m"].astype(float)
     return result.sort_values("jarak_rute_m").reset_index(drop=True)
